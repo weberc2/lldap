@@ -88,10 +88,10 @@ pub async fn check_migration_allowed(
         let is_sqlite = matches!(pool.get_database_backend(), sea_orm::DbBackend::Sqlite);
         if !auto_migrate.unwrap_or(is_sqlite) {
             anyhow::bail!(
-                "The database schema is out of date (found version {}, need version {}), and \
-automatic migration on startup is disabled for networked databases to avoid races between \
-multiple instances. Run the `create_schema` subcommand to migrate, then restart; or set \
-LLDAP_AUTO_MIGRATE=true (config key `auto_migrate`) to migrate on startup.",
+                "The database schema needs to be initialized or migrated (current version: {}, \
+required version: {}), but automatic migration on startup is disabled for networked databases \
+to avoid races between multiple instances. Run the `create_schema` subcommand first, then \
+restart; or set LLDAP_AUTO_MIGRATE=true (config key `auto_migrate`) to migrate on startup.",
                 current_version.map_or_else(|| "none".to_owned(), |v| v.0.to_string()),
                 LAST_SCHEMA_VERSION.0,
             );
